@@ -42,22 +42,39 @@ canvas {
     z-index: 10;
 }
 
-#ammoContainer {
+#healthContainer {
     position: absolute;
-    top: 60px;
-    left: 20px;
-    width: 200px;
-    height: 20px;
-    border: 2px solid #ffe81f;
-    background: #222;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
     z-index: 10;
 }
 
-#ammoBar {
+#healthLabel {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    text-shadow: 0 0 5px #00ff00;
+}
+
+#healthBarBg {
+    width: 200px;
+    height: 15px;
+    border: 2px solid #00ff00;
+    background: #111;
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#healthBar {
     height: 100%;
-    background: #00ff00;
+    background: linear-gradient(90deg, #00ff00, #008800);
     width: 100%;
-    transition: width 0.1s, background-color 0.2s;
+    transition: width 0.3s ease, background-color 0.3s;
+    box-shadow: 0 0 15px #00ff00;
 }
 
 #gameOver {

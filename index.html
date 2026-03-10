@@ -30,8 +30,17 @@
     </div>
     <div id="gameContainer" style="display: none;">
         <div id="ui">SCORE: <span id="scoreVal">0</span></div>
+        <div id="healthContainer">
+            <div id="healthLabel">HEALTH</div>
+            <div id="healthBarBg">
+                <div id="healthBar"></div>
+            </div>
+        </div>
         <div id="ammoContainer">
-            <div id="ammoBar"></div>
+            <div id="ammoLabel">AMMO</div>
+            <div id="ammoBarBg">
+                <div id="ammoBar"></div>
+            </div>
         </div>
         <canvas id="gameCanvas" width="800" height="600"></canvas>
         <div id="gameOver">
@@ -39,6 +48,9 @@
             <p>The Empire Got You.</p>
             <p>SCORE: <span id="finalScore">0</span></p>
             <button id="restartBtn">RESTART MISSION</button>
+            <button id="backToHubGameOverBtn"
+                style="display: block; width: 100%; margin-top: 15px; background: #222; color: #ffe81f; border: 1px solid #ffe81f; padding: 10px; cursor: pointer; border-radius: 5px; font-weight: bold;">BACK
+                TO HUB</button>
         </div>
         <button id="skipBtn"
             style="display: none; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 30;">SKIP
@@ -58,6 +70,9 @@
             <button id="skinsBtn"
                 style="font-size: 20px; padding: 10px 30px; background: #222; color: #ffe81f; border: 2px solid #ffe81f; cursor: pointer; border-radius: 5px; font-weight: bold; margin-top: 15px;">HANGAR:
                 CHANGE SHIP</button>
+            <button id="backToHubBtn"
+                style="font-size: 18px; padding: 10px 25px; background: transparent; color: #ffe81f; border: 1px solid #ffe81f; cursor: pointer; border-radius: 5px; font-weight: bold; margin-top: 20px; opacity: 0.7;">BACK
+                TO HUB</button>
         </div>
         <div id="skinScreen"
             style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; flex-direction: column; justify-content: center; align-items: center; background: rgba(0,0,0,0.95); z-index: 100;">
@@ -77,8 +92,9 @@
             </div>
         </div>
     </div>
-    <div class="controls">
-        Controls: <span class="key">←</span> <span class="key">→</span> to move | <span class="key">SPACE</span> to fire
+    <div class="controls-footer">
+        Controls: <span class="key-cap">←</span> <span class="key-cap">→</span> <span class="key-cap">↑</span> <span
+            class="key-cap">↓</span> to move & block | <span class="key-cap">SPACE</span> to strike
     </div>
 
     <!-- Scripts (Ordered for dependencies) -->

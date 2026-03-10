@@ -42,12 +42,8 @@ function loseLife() {
     } else {
         isInvulnerable = true;
         invulnerableTime = Date.now();
-        player.x = canvas.width / 2;
-        if (currentGameMode === 'DUEL') {
-            player.y = canvas.height - 60;
-            player.velocityY = 0;
-        }
     }
+    updateHealthUI();
 }
 
 function setupStars() {

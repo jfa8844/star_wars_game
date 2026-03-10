@@ -20,27 +20,31 @@ function draw() {
     }
 }
 
-// Main Game Loop
+// Main Game Loop (Persistent to prevent "super speed" bugs)
 function loop() {
-    if (gameStarted) {
+    if (gameStarted && !isGameOver && (!isGameWon || isCelebrating)) {
         update();
     }
     draw();
-    if (!isGameOver && (!isGameWon || isCelebrating)) {
-        animationId = requestAnimationFrame(loop);
-    }
+    requestAnimationFrame(loop);
 }
 
 // Game Completion Logic
 function endGame() {
+    console.log("Entering endGame state...");
     isGameOver = true;
     introAudio.pause();
     introAudio.currentTime = 0;
-    gameOverScreen.style.display = 'block';
-    gameOverScreen.querySelector('h2').innerText = "GAME OVER";
-    gameOverScreen.querySelector('p').innerText = currentGameMode === 'SHOOTER' ? "The Empire Got You." : "The Stormtroopers overwhelmed you.";
-    finalScore.innerText = score;
-    restartBtn.innerText = "PLAY AGAIN";
+    const screen = document.getElementById('gameOver');
+    if (screen) {
+        screen.style.display = 'block';
+        screen.querySelector('h2').innerText = "GAME OVER";
+        screen.querySelector('p').innerText = currentGameMode === 'SHOOTER' ? "The Empire Got You." : "The Stormtroopers overwhelmed you.";
+        finalScore.innerText = score;
+        restartBtn.innerText = "PLAY AGAIN";
+    } else {
+        console.error("Game Over screen element not found!");
+    }
 }
 
 function winGame() {
@@ -99,14 +103,19 @@ function resetGame() {
     }
 
     scoreVal.innerText = score;
-    ammo = MAX_AMMO;
-    updateAmmoUI();
     isGameOver = false;
     isGameWon = false;
+    updateHealthUI();
+    updateAmmoUI();
     gameOverScreen.style.display = 'none';
 
-    player.x = canvas.width / 2;
-    player.y = currentGameMode === 'SHOOTER' ? canvas.height - 60 : canvas.height - 60;
+    if (currentGameMode === 'DUEL') {
+        player.x = 100;
+    } else {
+        player.x = canvas.width / 2;
+    }
+    updateHealthUI();
+    player.y = canvas.height - 60;
     player.velocityY = 0;
     player.isJumping = false;
     player.isSwinging = false;
@@ -122,6 +131,13 @@ function resetGame() {
     shipExplosions.length = 0;
     fireworks.length = 0;
 
+    // Duel Specific Reset
+    cameraX = 0;
+    boss = null;
+    enemyFragments.length = 0;
+    platforms.length = 0;
+    if (currentGameMode === 'DUEL') initDuelLevel();
+
     lastEnemySpawn = 0;
     lastStarDestroyerSpawn = 0;
     lastAmmoSpawn = Date.now();
@@ -130,13 +146,11 @@ function resetGame() {
     keys.ArrowLeft = false;
     keys.ArrowRight = false;
     keys.ArrowUp = false;
+    keys.ArrowDown = false;
     keys.Space = false;
 
     gameOverScreen.querySelector('h2').style.color = "#ff3333";
     gameOverScreen.querySelector('h2').style.textShadow = "0 0 10px #ff3333";
-
-    if (animationId) cancelAnimationFrame(animationId);
-    animationId = requestAnimationFrame(loop);
 }
 
 // Global Input Listeners
@@ -144,6 +158,7 @@ document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowLeft') keys.ArrowLeft = true;
     if (e.code === 'ArrowRight') keys.ArrowRight = true;
     if (e.code === 'ArrowUp') keys.ArrowUp = true;
+    if (e.code === 'ArrowDown') keys.ArrowDown = true;
     if (e.code === 'Space') {
         if (currentGameMode === 'SHOOTER') {
             if (!keys.Space) shoot();
@@ -156,13 +171,14 @@ document.addEventListener('keyup', (e) => {
     if (e.code === 'ArrowLeft') keys.ArrowLeft = false;
     if (e.code === 'ArrowRight') keys.ArrowRight = false;
     if (e.code === 'ArrowUp') keys.ArrowUp = false;
+    if (e.code === 'ArrowDown') keys.ArrowDown = false;
     if (e.code === 'Space') keys.Space = false;
 });
 
 // Initialization
 document.addEventListener('DOMContentLoaded', () => {
     setupStars();
-    updateAmmoUI();
+    updateHealthUI();
 
     // Mission Listeners (Moved here to ensure resetGame is defined)
     document.getElementById('selectShooter').addEventListener('click', () => {
@@ -189,5 +205,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     restartBtn.addEventListener('click', resetGame);
 
-    animationId = requestAnimationFrame(loop);
+    const backToHub = () => {
+        gameStarted = false;
+        isGameOver = false;
+        isGameWon = false;
+        isCelebrating = false;
+        document.getElementById('gameContainer').style.display = 'none';
+        document.getElementById('gameOver').style.display = 'none';
+        document.getElementById('hubScreen').style.display = 'flex';
+        currentAppView = 'HUB';
+        introAudio.pause();
+        introAudio.currentTime = 0;
+        winAudio.pause();
+        winAudio.currentTime = 0;
+        // Persistent loop manages itself, no need to cancel or restart
+    };
+
+    document.getElementById('backToHubBtn').addEventListener('click', backToHub);
+    document.getElementById('backToHubGameOverBtn').addEventListener('click', backToHub);
+
+    // Initial loop start
+    requestAnimationFrame(loop);
 });

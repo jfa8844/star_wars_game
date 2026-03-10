@@ -71,7 +71,6 @@ function shoot() {
         lasers.push({ x: player.x + 18, y: player.y, width: 4, height: 18, speed: 15, color: '#00ff00', isAlly: true });
         player.lastShot = now;
         ammo--;
-        updateAmmoUI();
     }
 }
 
@@ -298,6 +297,7 @@ function updateShooter() {
 
     if (isGameOver || isGameWon) return;
     if (isInvulnerable && now - invulnerableTime > 2000) isInvulnerable = false;
+    updateAmmoUI();
 
     if (level === 1 && tiesDestroyed >= 7 && !isTransitioning) {
         tiesDestroyed = 0; triggerTransition(2, "HYPERSPACE JUMP ACTIVATED", "Approaching Imperial Fleet...");
@@ -364,7 +364,7 @@ function updateShooter() {
 
     for (let i = ammoDrops.length - 1; i >= 0; i--) {
         const drop = ammoDrops[i]; drop.y += drop.speed;
-        if (Math.sqrt(Math.pow(drop.x - player.x, 2) + Math.pow(drop.y - player.y, 2)) < 40) { ammoDrops.splice(i, 1); ammo = Math.min(MAX_AMMO, ammo + 10); updateAmmoUI(); score += 5; scoreVal.innerText = score; continue; }
+        if (Math.sqrt(Math.pow(drop.x - player.x, 2) + Math.pow(drop.y - player.y, 2)) < 40) { ammoDrops.splice(i, 1); ammo = Math.min(MAX_AMMO, ammo + 10); score += 5; scoreVal.innerText = score; continue; }
         if (drop.y > canvas.height + 30) ammoDrops.splice(i, 1);
     }
 
@@ -488,7 +488,7 @@ function drawShooter() {
         allies.forEach(ally => { ctx.save(); ctx.translate(ally.x - player.x, ally.y - player.y); drawPlayer(); ctx.restore(); });
     }
 
-    ctx.fillStyle = '#00ff00'; ctx.font = '20px Courier New'; ctx.textAlign = 'right'; ctx.fillText(`LIVES: ${lives}`, canvas.width - 20, 50);
+    // Health bar is handled by DOM
     if (isTransitioning) { ctx.fillStyle = '#fff'; ctx.font = '36px Courier New'; ctx.textAlign = 'center'; ctx.shadowBlur = 15; ctx.shadowColor = '#fff'; ctx.fillText(transitionText1, canvas.width / 2, canvas.height / 2); ctx.font = '24px Courier New'; ctx.fillText(transitionText2, canvas.width / 2, canvas.height / 2 + 40); ctx.shadowBlur = 0; }
     else if (level === 1) { ctx.fillStyle = '#aaa'; ctx.font = '16px Courier New'; ctx.textAlign = 'right'; ctx.fillText(`Jump Drive Charging: ${tiesDestroyed}/7`, canvas.width - 20, 75); }
     else if (level === 2) { ctx.fillStyle = '#ff3333'; ctx.font = '16px Courier New'; ctx.textAlign = 'right'; ctx.fillText(`SD: ${sdsDestroyed}/2 | TIE: ${tiesDestroyed}/8`, canvas.width - 20, 75); }

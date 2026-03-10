@@ -6,7 +6,8 @@ const gameOverScreen = document.getElementById('gameOver');
 const finalScore = document.getElementById('finalScore');
 const restartBtn = document.getElementById('restartBtn');
 const skipBtn = document.getElementById('skipBtn');
-const ammoBar = document.getElementById('ammoBar');
+const ammoBar = null; // Removed
+const healthBar = document.getElementById('healthBar');
 
 // Game State
 let score = 0;
@@ -32,7 +33,7 @@ let currentGameMode = 'SHOOTER'; // 'SHOOTER' or 'DUEL'
 let currentAppView = 'HUB'; // 'HUB' or 'GAME'
 
 // Shared Game Variables
-const MAX_LIVES = 3;
+const MAX_LIVES = 6;
 let lives = MAX_LIVES;
 const MAX_AMMO = 30;
 let ammo = MAX_AMMO;
@@ -70,6 +71,7 @@ const keys = {
     ArrowLeft: false,
     ArrowRight: false,
     ArrowUp: false,
+    ArrowDown: false,
     Space: false
 };
 
@@ -87,6 +89,13 @@ const player = {
     lastSwing: 0
 };
 
+// Platformer / Duel Specific
+let cameraX = 0;
+const worldWidth = 5000;
+const platforms = [];
+const enemyFragments = [];
+let boss = null;
+
 // Entity Arrays
 const lasers = [];
 const enemyLasers = [];
@@ -94,6 +103,7 @@ const enemies = [];
 const starDestroyers = [];
 const turrets = [];
 const allies = [];
+const healthDrops = [];
 const stars = [];
 const ammoDrops = [];
 const fireworks = [];

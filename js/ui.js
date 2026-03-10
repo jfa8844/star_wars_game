@@ -1,12 +1,50 @@
+function updateHealthUI() {
+    const healthBar = document.getElementById('healthBar');
+    const healthLabel = document.getElementById('healthLabel');
+    if (!healthBar) return;
+    const percentage = Math.max(0, (lives / MAX_LIVES) * 100);
+    healthBar.style.width = percentage + '%';
+
+    // Color shift based on health
+    if (percentage < 30) {
+        healthBar.style.background = 'linear-gradient(90deg, #ff3333, #880000)';
+        healthBar.style.boxShadow = '0 0 15px #ff3333';
+        healthLabel.style.textShadow = '0 0 15px #ff3333';
+        healthLabel.style.color = '#ff3333';
+    } else if (percentage < 60) {
+        healthBar.style.background = 'linear-gradient(90deg, #ff9900, #884400)';
+        healthBar.style.boxShadow = '0 0 15px #ff9900';
+        healthLabel.style.textShadow = '0 0 15px #ff9900';
+        healthLabel.style.color = '#ff9900';
+    } else {
+        healthBar.style.background = 'linear-gradient(90deg, #00ff00, #008800)';
+        healthBar.style.boxShadow = '0 0 15px #00ff00';
+        healthLabel.style.textShadow = '0 0 15px #00ff00';
+        healthLabel.style.color = '#00ff00';
+    }
+}
+
 function updateAmmoUI() {
+    const ammoBar = document.getElementById('ammoBar');
+    const ammoContainer = document.getElementById('ammoContainer');
+    if (!ammoBar || !ammoContainer) return;
+
+    if (currentGameMode === 'DUEL') {
+        ammoContainer.style.display = 'none';
+        return;
+    } else {
+        ammoContainer.style.display = 'block';
+    }
+
     const percentage = Math.max(0, (ammo / MAX_AMMO) * 100);
     ammoBar.style.width = percentage + '%';
+
     if (percentage < 30) {
-        ammoBar.style.backgroundColor = '#ff3333';
-    } else if (percentage < 60) {
-        ammoBar.style.backgroundColor = '#ff9900';
+        ammoBar.style.background = 'linear-gradient(90deg, #ff3333, #880000)';
+        ammoBar.style.boxShadow = '0 0 10px #ff3333';
     } else {
-        ammoBar.style.backgroundColor = '#00ff00';
+        ammoBar.style.background = 'linear-gradient(90deg, #ffe81f, #887a00)';
+        ammoBar.style.boxShadow = '0 0 10px #ffe81f';
     }
 }
 
@@ -91,6 +129,7 @@ const skinsData = [
 document.getElementById('startGameBtn').addEventListener('click', () => {
     document.getElementById('startScreen').style.display = 'none';
     gameStarted = true;
+    updateAmmoUI();
     if (currentGameMode === 'SHOOTER') {
         introAudio.play().catch(e => console.log("Audio waiting:", e));
     }
